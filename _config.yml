@@ -1,41 +1,38 @@
-# Setup
-title: Poole
-tagline: The Jekyll Butler
-url: https://getpoole.com
-paginate: 1
-baseurl: ""
-permalink: pretty
+# Site settings
+title: Nikita Kazeichev | Блог о web-разработке
+description: Блог о web-разработке
+baseurl: "" # the subpath of your site, e.g. /blog
+# url: "" # the base hostname & protocol for your site e.g. http://willianjusten.com.br
 
-# Gems
-plugins:
-  - jekyll-gist
-  - jekyll-paginate
-  - jekyll-seo-tag
+# User settings
+username: Nikita Kazeichev
+user_title: Блог о web-разработке
+email: kazeichev@yandex.ru
+github_username:  kazeichev
 
-# Optimize Jekyll
-exclude:
-  - .editorconfig
-  - .git
-  - .jekyll-cache
-  - Gemfile
-  - Gemfile.lock
-  - LICENSE.md
-  - README.md
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: /:title/
+timezone: Europe/Moscow
 
-sass:
-  sass_dir: _sass
-  style: :compressed
+# Post settings
+future: true
 
-# Options
+# html minify
+compress_html:
+  clippings: all
+  comments: all
+  endings: []
+  profile: false
 
-# Replace this value and uncomment to enable Google Analytics tracking
-# ga_analytics: UA-000000-0
+# Links to include in menu navigation
+# For external links add external: true
+links:
+  - title: Статьи
+    url: /
+  - title: Об авторе
+    url: /about
 
-# Specify the author for blog posts
-author:
-  name: Mark Otto
-  url: https://twitter.com/mdo
-  email: markdotto@gmail.com
-
-# Custom vars
-version: 3.0.0
+# exclude my node related stuff
+exclude: ['package.json', 'src', 'node_modules']
