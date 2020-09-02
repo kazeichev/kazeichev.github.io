@@ -1,0 +1,94 @@
+I"]<p>Один из этапов моего обучения – освоить Django Framework. И вот настал тот день, когда я решил приступить к этому этапу, а именно, создать свой первый небольшой проект под руководством <a href="https://vk.com/lambda_brain">Сергея Бобровского</a>.</p>
+
+<p>Обычно знакомство с каким-то ПО начинается с его установки, но тут даже рассказывать нечего. Все прошло в пару кликов мыши. Как-то скучновато.</p>
+
+<p>Затем пришлось столкнуться с самым сложным, с архитектурой вновь созданного проекта. Я до сих пор не осознал как же корректно делить свой код на приложения. И в этом основной мой косяк, так как я считаю, что это очень, нет ОЧЕНЬ важный момент при разработке web-приложения на Django. Надеюсь позже, при разработке более глобальных проектов я пойму что к чему в этом плане.</p>
+
+<p>Следующим шагом на пути освоения данного фреймворка стало знакомство с моделями. Я на данный момент не стал подключать полноценную СУБД и ограничился SQLite3. С моделями все оказалось не так просто. Я всегда испытывал проблемы с пониманием взаимоотношений между сущностями (One-to-many, many-to-many, one-to-one) и тут наступил на те же грабли. Спустя n-ое кол-во времени и нескольких прочитанных статей/просмотренных видео, я освоил данный материал и научился оформлять примитивные Django Models. На данный момент смог сделать что-то такое: модели “Автомобиль” и “Бренд”.</p>
+
+<figure class="highlight"><pre><code class="language-models" data-lang="models">class Vehicle(models.Model):
+    vehicle_brand = models.ForeignKey('VehicleBrand', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    mileage = models.FloatField(null=True)
+    purchase_date = models.DateTimeField(null=True)
+    condition = models.IntegerField(null=True)
+    price = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.vehicle_brand.name
+
+class VehicleBrand(models.Model):
+    VEHICLE_TYPE_PASSENGER = 'passenger'
+    VEHICLE_TYPE_TRUCK = 'truck'
+    VEHICLE_TYPE_BUS = 'bus'
+
+    VEHICLE_TYPES = [
+        (VEHICLE_TYPE_PASSENGER, 'Легковой автомобиль'),
+        (VEHICLE_TYPE_TRUCK, 'Грузовой автомобиль'),
+        (VEHICLE_TYPE_BUS, 'Автобус')
+    ]
+
+    FUEL_TYPE_PETROL = 'petrol'
+    FUEL_TYPE_DIESEL = 'diesel'
+    FUEL_TYPE_GAS = 'gas'
+
+    FUEL_TYPES = [
+        (FUEL_TYPE_PETROL, 'Бензин'),
+        (FUEL_TYPE_DIESEL, 'Дизель'),
+        (FUEL_TYPE_GAS, 'Газ')
+    ]
+
+    name = models.CharField(max_length=255, null=False, blank=False)
+    type = models.CharField(max_length=20, choices=VEHICLE_TYPES, null=False, blank=False)
+    fuel_type = models.CharField(max_length=20, choices=FUEL_TYPES, null=False, blank=False)
+    lifting = models.FloatField()
+    seats = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name</code></pre></figure>
+
+<p>Далее было решено освоить Django Rest Framework – дополнение к django, позволяющее реализовывать доступ по api к моему бекенду.</p>
+
+<p>На данный момент особо вникнуть во все тонкости настроек мне не удалось – не было такой поставленной задачи. Но смог изрядно повозиться со вложенной сериализацией сущностей. Моя сущность “Автомобиль” связана с сущность “Бренд” и мне очень хотелось чтобы при запросе через api всех автомобилей в теле ответа видеть не просто заголовок бренда, а всю полноценную модель. Для этого в rest framework-e есть <code class="language-plaintext highlighter-rouge">Nested relationships</code>, который имеет флаг <code class="language-plaintext highlighter-rouge">many=True</code>. Именно этот флаг я поставил в ненужном месте и очень долго не мог понять что же я делаю не так. Но, к счастью, проблему удалось одолеть.</p>
+
+<p>Под сериалайзеры я завел отдельный файл и, собственно, там их и описал.</p>
+
+<figure class="highlight"><pre><code class="language-serializers" data-lang="serializers">class VehicleBrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VehicleBrand
+        fields = [
+            'name',
+            'type',
+            'fuel_type',
+            'lifting',
+            'seats',
+            'created_at',
+            'updated_at',
+        ]
+
+class VehicleSerializer(serializers.ModelSerializer):
+    vehicle_brand = VehicleBrandSerializer() &lt;-- вот тут many=True не нужен был...
+
+    class Meta:
+        model = Vehicle
+        fields = [
+            'vehicle_brand',
+            'mileage',
+            'purchase_date',
+            'condition',
+            'price',
+            'created_at',
+            'updated_at'
+        ]</code></pre></figure>
+
+<p>Сама view для отображения данного api-запроса выглядит пока совсем примитивно.</p>
+
+<figure class="highlight"><pre><code class="language-view" data-lang="view">class VehicleViewSet(viewsets.ModelViewSet):
+    queryset = Vehicle.objects.all()
+    serializer_class = VehicleSerializer</code></pre></figure>
+
+<p>Продолжение следует…</p>
+:ET
