@@ -1,0 +1,53 @@
+I"<p>Один из этапов моего обучения – освоить Django Framework. И вот настал тот день, когда я решил преступить к этому этапу, а именно, создать свой первый небольшой проект под руководством <a href="https://vk.com/lambda_brain">Сергея Бобровского</a>.</p>
+
+<p>Обычно знакомство с каким-то ПО начинается с его установки, но тут даже рассказывать нечего. Все прошло в пару кликов мыши. Как-то скучновато.</p>
+
+<p>Затем пришлось столкнуться с самым сложным, с архитектурой вновь созданного проекта. Я до сих пор не осознал как же корректно делить свой код на приложения. И в этом основной мой косяк, так как я считаю, что это очень, нет ОЧЕНЬ важный момент при разработке web-приложения на Django. Надеюсь позже, при разработке более глобальных проектов я пойму что к чему в этом плане.</p>
+
+<p>Следующим шагом на пути освоения данного фреймворка стало знакомство с моделями. Я на данный момент не стал подключать полноценныю СУБД и ограничился SQLite3. С моделями все оказалось не так просто. Я всегда испытывал проблемы с пониманием взаимоотношений между сущностями (One-to-many, many-to-many, one-to-one) и тут наступил на теже грабли. Спустя n-ое кол-во времени и нескольких прочитанных статей/просмотренных видео, я освоил данный материал и научился оформлять примитивные Django Models.</p>
+
+<figure class="highlight"><pre><code class="language-models" data-lang="models">class Vehicle(models.Model):
+    vehicle_brand = models.ForeignKey('VehicleBrand', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    mileage = models.FloatField(null=True)
+    purchase_date = models.DateTimeField(null=True)
+    condition = models.IntegerField(null=True)
+    price = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.vehicle_brand.name
+
+class VehicleBrand(models.Model):
+    VEHICLE_TYPE_PASSENGER = 'passenger'
+    VEHICLE_TYPE_TRUCK = 'truck'
+    VEHICLE_TYPE_BUS = 'bus'
+
+    VEHICLE_TYPES = [
+        (VEHICLE_TYPE_PASSENGER, 'Легковой автомобиль'),
+        (VEHICLE_TYPE_TRUCK, 'Грузовой автомобиль'),
+        (VEHICLE_TYPE_BUS, 'Автобус')
+    ]
+
+    FUEL_TYPE_PETROL = 'petrol'
+    FUEL_TYPE_DIESEL = 'diesel'
+    FUEL_TYPE_GAS = 'gas'
+
+    FUEL_TYPES = [
+        (FUEL_TYPE_PETROL, 'Бензин'),
+        (FUEL_TYPE_DIESEL, 'Дизель'),
+        (FUEL_TYPE_GAS, 'Газ')
+    ]
+
+    name = models.CharField(max_length=255, null=False, blank=False)
+    type = models.CharField(max_length=20, choices=VEHICLE_TYPES, null=False, blank=False)
+    fuel_type = models.CharField(max_length=20, choices=FUEL_TYPES, null=False, blank=False)
+    lifting = models.FloatField()
+    seats = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name</code></pre></figure>
+
+:ET
