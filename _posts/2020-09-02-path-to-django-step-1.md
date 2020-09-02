@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Django. История пути. Шаг первый"
-date: 2020-09-02 21:24:12
+date: 2020-09-02 19:24:12
 image: '/assets/img/'
 description:
 tags: django
